@@ -21,6 +21,7 @@ void maple_queue_flush(void) {
     cnt = amt = 0;
     out = (uint32 *)maple_state.dma_buffer;
     last = NULL;
+    int sent[4][6] = {0};
 
     /* Make sure we end up with space for the gun enable command... */
     if(maple_state.gun_port > -1)
@@ -35,6 +36,12 @@ void maple_queue_flush(void) {
         /* Is this frame stale? */
         if(i->state != MAPLE_FRAME_UNSENT)
             continue;
+
+        /* Have we already sent a frame to this port? */
+        if(sent[i->dst_port][i->dst_unit])
+            continue;
+
+        sent[i->dst_port][i->dst_unit] = 1;
 
         i->state = MAPLE_FRAME_SENT;
 
