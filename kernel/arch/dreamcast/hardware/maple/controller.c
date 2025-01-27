@@ -110,8 +110,15 @@ int cont_btn_callback(uint8_t addr, uint32_t btns, cont_btn_callback_t cb) {
         return 0;
     }
 
+    const kthread_attr_t thread_attr = {
+        .create_detached = false,
+        .stack_size = 1024 * 5,
+        .prio = PRIO_DEFAULT,
+        .label = "cont_btn_callback"
+    };
+
     params->worker =
-        thd_worker_create_ex(NULL, &cont_btn_cb_thread, params);
+        thd_worker_create_ex(&thread_attr, &cont_btn_cb_thread, params);
 
     if(!params->worker) {
         free(params);
