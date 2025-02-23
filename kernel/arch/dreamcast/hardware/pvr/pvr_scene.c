@@ -145,6 +145,8 @@ void pvr_scene_begin_txr(pvr_ptr_t txr, uint32 *rx, uint32 *ry) {
 
     // Set the render pitch up
     pvr_state.to_txr_rp[buf] = (*rx) * 2 / 8;
+    pvr_state.to_txr_w[buf] = *rx;
+    pvr_state.to_txr_h[buf] = *ry;
 
     // Set the output address
     pvr_state.to_txr_addr[buf] = (uint32)(txr) - PVR_RAM_INT_BASE;
