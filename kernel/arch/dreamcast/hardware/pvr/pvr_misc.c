@@ -247,23 +247,46 @@ void pvr_begin_queued_render(void) {
     PVR_SET(PVR_ISP_TILEMAT_ADDR, tbuf->tile_matrix);
     PVR_SET(PVR_ISP_VERTBUF_ADDR, tbuf->vertex);
 
-    if(!pvr_state.to_texture[bufn])
+    dbglog(DBG_CRITICAL, 
+        "ToTex: %d, FB: %08lx, txr: %08lx\n", pvr_state.to_texture[bufn ^ 1], rbuf->frame, pvr_state.to_txr_addr[bufn ^ 1] | (1 << 24));
+
+    if(!pvr_state.to_texture[bufn ^ 1]) {
         PVR_SET(PVR_RENDER_ADDR, rbuf->frame);
+
+        pvr_state.pclip_left = 0;
+        pvr_state.pclip_right = pvr_state.w - 1;
+        pvr_state.pclip_top = 0;
+        pvr_state.pclip_bottom = pvr_state.h - 1;
+        pvr_state.pclip_x = (pvr_state.pclip_right << 16) | (pvr_state.pclip_left);
+        pvr_state.pclip_y = (pvr_state.pclip_bottom << 16) | (pvr_state.pclip_top);
+
+        PVR_SET(PVR_PCLIP_X, pvr_state.pclip_x);
+        PVR_SET(PVR_PCLIP_Y, pvr_state.pclip_y);
+    }
     else {
-        PVR_SET(PVR_RENDER_ADDR, pvr_state.to_txr_addr[bufn] | (1 << 24));
-        PVR_SET(PVR_RENDER_ADDR_2, pvr_state.to_txr_addr[bufn] | (1 << 24));
+        PVR_SET(PVR_RENDER_ADDR, pvr_state.to_txr_addr[bufn ^ 1] | (1 << 24));
+        PVR_SET(PVR_RENDER_ADDR_2, pvr_state.to_txr_addr[bufn ^ 1] | (1 << 24));
+
+        pvr_state.pclip_left = 0;
+        pvr_state.pclip_right = pvr_state.to_txr_w[bufn ^ 1] - 1;
+        pvr_state.pclip_top = 0;
+        pvr_state.pclip_bottom = pvr_state.to_txr_h[bufn ^ 1] - 1;
+        pvr_state.pclip_x = (pvr_state.pclip_right << 16) | (pvr_state.pclip_left);
+        pvr_state.pclip_y = (pvr_state.pclip_bottom << 16) | (pvr_state.pclip_top);
+        
+        PVR_SET(PVR_PCLIP_X, pvr_state.pclip_x);
+        PVR_SET(PVR_PCLIP_Y, pvr_state.pclip_y);
     }
 
     PVR_SET(PVR_BGPLANE_CFG, vert_end); /* Bkg plane location */
     zclip.f = pvr_state.zclip;
     PVR_SET(PVR_BGPLANE_Z, zclip.i);
-    PVR_SET(PVR_PCLIP_X, pvr_state.pclip_x);
-    PVR_SET(PVR_PCLIP_Y, pvr_state.pclip_y);
 
-    if(!pvr_state.to_texture[bufn])
+
+    if(!pvr_state.to_texture[bufn^1])
         PVR_SET(PVR_RENDER_MODULO, (pvr_state.w * vid_pmode_bpp[vid_mode->pm]) / 8);
     else
-        PVR_SET(PVR_RENDER_MODULO, pvr_state.to_txr_rp[bufn]);
+        PVR_SET(PVR_RENDER_MODULO, pvr_state.to_txr_rp[bufn^1]);
 
     // XXX Do we _really_ need this every time?
     // SETREG(PVR_FB_CFG_2, 0x00000009);        /* Alpha mode */
