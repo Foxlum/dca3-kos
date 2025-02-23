@@ -247,9 +247,6 @@ void pvr_begin_queued_render(void) {
     PVR_SET(PVR_ISP_TILEMAT_ADDR, tbuf->tile_matrix);
     PVR_SET(PVR_ISP_VERTBUF_ADDR, tbuf->vertex);
 
-    dbglog(DBG_CRITICAL, 
-        "ToTex: %d, FB: %08lx, txr: %08lx\n", pvr_state.to_texture[bufn ^ 1], rbuf->frame, pvr_state.to_txr_addr[bufn ^ 1] | (1 << 24));
-
     if(!pvr_state.to_texture[bufn ^ 1]) {
         PVR_SET(PVR_RENDER_ADDR, rbuf->frame);
 
