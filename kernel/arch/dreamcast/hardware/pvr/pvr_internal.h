@@ -215,6 +215,8 @@ typedef struct {
 
     // Render pitch for to-texture mode
     int     to_txr_rp[2];
+    int     to_txr_w[2];
+    int     to_txr_h[2];
 
     // Output address for to-texture mode
     uint32  to_txr_addr[2];
