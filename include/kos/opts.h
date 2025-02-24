@@ -116,24 +116,24 @@ __BEGIN_DECLS
 
 /** \brief  The maximum number of cd files that can be open at a time. */
 #ifndef FS_CD_MAX_FILES
-#define FS_CD_MAX_FILES 8
+#define FS_CD_MAX_FILES 16
 #endif
 
 /** \brief  The maximum number of romdisk files that can be open at a time. */
 #ifndef FS_ROMDISK_MAX_FILES
-#define FS_ROMDISK_MAX_FILES 16
+#define FS_ROMDISK_MAX_FILES 1
 #endif
 
 /** \brief  The maximum number of ramdisk files that can be open at a time. */
 #ifndef FS_RAMDISK_MAX_FILES
-#define FS_RAMDISK_MAX_FILES 8
+#define FS_RAMDISK_MAX_FILES 1
 #endif
 
 /** \brief  The number of distinct file descriptors, including files and
             network sockets, that can be in use at a time. Decreasing this
             value can reduce memory usage.  */
 #ifndef FD_SETSIZE
-#define FD_SETSIZE 1024
+#define FD_SETSIZE 64
 #endif
 
 /** @} */
